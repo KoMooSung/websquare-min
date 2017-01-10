@@ -12,7 +12,8 @@ module.exports = function(grunt) {
         conn = new SSH();
 
     function transferDir( conn, options, cb ) {
-      let cmd = 'tar cf - "' + options.remotePath + '" 2>/dev/null',
+      // let cmd = 'tar cf - "' + options.remotePath + '" 2>/dev/null',
+      let cmd = 'cd ' + options.remotePath + ';' + 'tar cf - ./* 2>/dev/null',
           compression = null;
 
       if ( options.compression ) {
@@ -68,6 +69,8 @@ module.exports = function(grunt) {
         conn.end();
         done();
       });
+    }).on('keyboard-interactive', function(name, instructions, instructionsLang, prompts, finish) {
+      finish([options.password]);
     }).connect(options);
   });
 
@@ -168,6 +171,8 @@ module.exports = function(grunt) {
         conn.end();
         done();
       });
+    }).on('keyboard-interactive', function(name, instructions, instructionsLang, prompts, finish) {
+      finish([options.password]);
     }).connect(options);
   });
 };
